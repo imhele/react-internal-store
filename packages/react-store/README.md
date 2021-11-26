@@ -1,3 +1,0 @@
-# react-store
-
-[![NPM version](https://img.shields.io/npm/v/react-store.svg?style=flat)](https://npmjs.org/package/react-store) [![NPM downloads](http://img.shields.io/npm/dm/react-store.svg?style=flat)](https://npmjs.org/package/react-store) [![Test Coverage](https://github.com/imhele/react-store/actions/workflows/Test%20Coverage.yml/badge.svg)](https://github.com/imhele/react-store/actions/workflows/Test%20Coverage.yml) [![Coverage Status](https://coveralls.io/repos/github/imhele/react-store/badge.svg?branch=master)](https://coveralls.io/github/imhele/react-store?branch=master) [![License](https://img.shields.io/npm/l/react-store.svg)](https://npmjs.org/package/react-store)

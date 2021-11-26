@@ -1,5 +1,5 @@
 {
-  "name": "react-store-monorepo",
+  "name": "use-model-monorepo",
   "private": true,
   "scripts": {
     "build": "NODE_ENV=production wc-bundler",
@@ -60,12 +60,12 @@
     "*.{css,less}": "stylelint --fix"
   },
   "author": "何乐 <work@imhele.com> (https://github.com/imhele)",
-  "homepage": "https://github.com/imhele/react-store",
+  "homepage": "https://github.com/imhele/use-model",
   "bugs": {
-    "url": "https://github.com/imhele/react-store/issues"
+    "url": "https://github.com/imhele/use-model/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/imhele/react-store"
+    "url": "https://github.com/imhele/use-model"
   }
 }
