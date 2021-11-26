@@ -1,0 +1,9 @@
+{
+  "cSpell.words": ["browserslist", "jsxdev", "pnpm", "postpublish", "stylelint"],
+  "css.validate": false,
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+  "less.validate": false,
+  "typescript.tsdk": "node_modules/typescript/lib"
+}

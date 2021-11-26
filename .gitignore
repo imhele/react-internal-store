@@ -1,0 +1,44 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+node_modules/
+
+# log
+lerna-debug.log*
+npm-debug.log*
+wc-bundler.log*
+yarn-error.log*
+
+# production
+/dist
+/es
+/lib
+/*.umd.js
+/apps/*/dist
+/packages/*/dist
+/packages/*/es
+/packages/*/lib
+/packages/*/types
+/packages/*/*-dist
+/packages/*/*-es
+/packages/*/*-lib
+/packages/*/*.umd.js
+
+# test
+/coverage
+
+# misc
+.DS_Store
+
+# local
+*.local.*
+
+# umi
+.umi/
+.umi-production/
+.umi-test/
+
+# lock file
+/pnpm-lock.*
+/package-lock.json
+/yark.lock

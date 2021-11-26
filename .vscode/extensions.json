@@ -1,0 +1,10 @@
+{
+  "recommendations": [
+    "dbaeumer.vscode-eslint",
+    "drknoxy.eslint-disable-snippets",
+    "esbenp.prettier-vscode",
+    "meganrogge.template-string-converter",
+    "streetsidesoftware.code-spell-checker",
+    "stylelint.vscode-stylelint"
+  ]
+}

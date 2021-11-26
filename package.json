@@ -1,0 +1,71 @@
+{
+  "name": "typescript-library-template",
+  "private": true,
+  "scripts": {
+    "build": "NODE_ENV=production wc-bundler",
+    "lint": "pnpm run lint:script && pnpm run lint:style",
+    "lint:fix": "pnpm run lint:script:fix && pnpm run lint:style:fix",
+    "lint:script": "eslint . --ignore-path .gitignore",
+    "lint:script:fix": "pnpm run lint:script -- --fix",
+    "lint:style": "stylelint '**/*.{css,less}' --ignore-path .gitignore",
+    "lint:style:fix": "pnpm run lint:style -- --fix",
+    "postinstall": "node npm-lifecycle/postinstall.js",
+    "publish:all": "pnpm lint && pnpm build && pnpm test && pnpm m publish",
+    "test": "jest",
+    "test:watch": "jest --coverage --watchAll",
+    "test:ci": "jest --coverage --ci",
+    "test:coverage": "jest --coverage"
+  },
+  "devDependencies": {
+    "@babel/core": "~7.15.0",
+    "@babel/eslint-parser": "~7.15.0",
+    "@babel/preset-env": "~7.15.0",
+    "@jest/types": "^27.0.6",
+    "@types/jest": "^27.0.1",
+    "@types/node": "^14.17.6",
+    "@typescript-eslint/eslint-plugin": "^4.19.0",
+    "@typescript-eslint/parser": "^4.19.0",
+    "chalk": "^4.1.1",
+    "eslint": "^7.22.0",
+    "eslint-config-prettier": "^8.1.0",
+    "eslint-import-resolver-node": "^0.3.4",
+    "eslint-plugin-import": "^2.22.1",
+    "eslint-plugin-prettier": "^3.3.1",
+    "jest": "^27.0.6",
+    "lint-staged": "^12.1.0",
+    "postcss-less": "^5.0.0",
+    "prettier": "^2.1.0",
+    "stylelint": "^14.1.0",
+    "stylelint-config-standard": "^24.0.0",
+    "typescript": "^4.5.2",
+    "wc-bundler": "^0.10.7",
+    "yorkie": "^2.0.0"
+  },
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "engines": {
+    "node": ">=12",
+    "pnpm": ">=6"
+  },
+  "gitHooks": {
+    "commit-msg": "node scripts/verifyCommit.js",
+    "pre-commit": "lint-staged"
+  },
+  "lint-staged": {
+    "*.{md,json,yaml,yml}": "prettier --write",
+    "*.{js,mjs,jsx,ts,tsx}": "eslint --fix",
+    "*.{css,less}": "stylelint --fix"
+  },
+  "author": "何乐 <work@imhele.com> (https://github.com/imhele)",
+  "homepage": "https://github.com/imhele/typescript-library-template",
+  "bugs": {
+    "url": "https://github.com/imhele/typescript-library-template/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imhele/typescript-library-template"
+  }
+}
