@@ -1,0 +1,64 @@
+# dependencies
+node_modules/
+
+# log
+/lerna-debug.log*
+/npm-debug.log*
+/wc-bundler.log*
+/yarn-error.log*
+
+# source code
+/packages
+/scripts
+/src
+
+# test
+/coverage
+
+# misc
+.DS_Store
+
+# local
+*.local.*
+
+# umi
+.umi/
+.umi-production/
+.umi-test/
+
+# linter config
+.eslintignore
+.eslintrc*
+.prettierignore
+.prettierrc*
+
+# bundler config
+/.babelrc*
+/.wc-bundlerrc.*
+/.umirc.*
+/babel.config.*
+/gulpfile*
+/jsconfig.json
+/tsconfig.json
+/wc-bundler.config.*
+/webpack.config.*
+
+# package manager config
+/.npmignore
+/.npmrc
+/.nvmrc
+/.pnpmfile*
+/.yarnrc
+/lerna.json
+/pnpm-lock.*
+/pnpm-workspace.*
+
+# test config
+/jest.config.*
+
+# editor config
+.editorconfig
+.gitignore
+/.github
+/.gitlab
+/.vscode

@@ -1,6 +1,5 @@
 {
-  "name": "@typescript-library-template/demo",
-  "private": true,
+  "name": "react-store",
   "version": "0.0.1-alpha.0",
   "license": "MIT",
   "main": "./lib/index.js",
@@ -9,19 +8,24 @@
   "dependencies": {
     "@babel/runtime": "~7.15.0"
   },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0"
+  },
   "devDependencies": {
+    "@types/react": "^17.0.27",
+    "react": "^17.0.0",
     "typescript": "^4.5.2",
     "wc-bundler": "^0.10.7"
   },
   "sideEffects": false,
   "author": "何乐 <work@imhele.com> (https://github.com/imhele)",
-  "homepage": "https://github.com/imhele/typescript-library-template",
+  "homepage": "https://github.com/imhele/react-store",
   "bugs": {
-    "url": "https://github.com/imhele/typescript-library-template/issues"
+    "url": "https://github.com/imhele/react-store/issues"
   },
   "repository": {
     "type": "git",
-    "url": "https://github.com/imhele/typescript-library-template",
-    "directory": "packages/demo"
+    "url": "https://github.com/imhele/react-store",
+    "directory": "packages/react-store"
   }
 }
