@@ -2,10 +2,11 @@
 node_modules/
 
 # log
-/lerna-debug.log*
-/npm-debug.log*
-/wc-bundler.log*
-/yarn-error.log*
+lerna-debug.log*
+npm-debug.log*
+wc-bundler.log*
+yarn-error.log*
+.pnpm-debug.log*
 
 # source code
 /packages

@@ -8,6 +8,7 @@ lerna-debug.log*
 npm-debug.log*
 wc-bundler.log*
 yarn-error.log*
+.pnpm-debug.log*
 
 # production
 /dist
