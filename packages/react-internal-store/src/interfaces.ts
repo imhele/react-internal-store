@@ -1,13 +1,10 @@
-import type { ReactElement, ReactNode } from 'react';
+import type { DependencyList, ReactElement, ReactNode } from 'react';
 
 /**
- * Model 的定义。
+ * Model 的定义，其本质是一个约定了返回内容的 React Hook 。
  */
 export interface ModelDefinition<Actions, State> {
-  /**
-   * Model 运行的主体逻辑，是一个 React Hook 。
-   */
-  readonly hook: () => readonly [state: State, actions: Actions];
+  (): readonly [state: State, actions: Actions];
 }
 
 /**
@@ -39,15 +36,29 @@ export type AnyModelDefinitionsMap = {
 };
 
 /**
- * 根据 Store 创建的消费 Model 状态的 React Hook useModel() ，可以从对应的
+ * 根据 Model 状态选取一部分来使用。
+ */
+export type ModelStateSelector<State, SelectedState> = (
+  state: State,
+  prev?: SelectedState,
+) => SelectedState;
+
+/**
+ * 根据 Store 创建的消费 Model 的 React Hook useModel() ，可以从对应的
  * Store 中获取 state 与 actions 。
+ *
+ * 如果传入了 select 函数，则会在每次 Model 更新时以最新的 state
+ * 以及 select 上一次返回的内容为入参调用此函数，当返回的结果发生变化时，触发当前组件重新渲染。
+ *
+ * 另外的，还可以向 useModel 传入第二个参数 deps 作为依赖项列表，当 deps
+ * 数组的内容发生变化时，将重新调用 select 函数，当返回的结果发生变化时，触发当前组件重新渲染。
  */
 export interface ModelConsumeHookType<Actions, State> {
   (): [state: State, actions: Actions];
-  <SelectedState>(select: (state: State) => SelectedState): [
-    state: SelectedState,
-    actions: Actions,
-  ];
+  <SelectedState>(
+    select: ModelStateSelector<State, SelectedState> | undefined,
+    deps?: DependencyList,
+  ): [state: SelectedState, actions: Actions];
 }
 
 /**

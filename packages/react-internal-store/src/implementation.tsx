@@ -1,16 +1,10 @@
-import React, {
-  DependencyList,
-  Dispatch,
-  SetStateAction,
-  useEffect,
-  useRef,
-  useState,
-} from 'react';
+import React, { DependencyList, useEffect, useRef, useState } from 'react';
 import type {
   AnyModelDefinition,
   AnyModelDefinitionsMap,
   ModelConsumeHooksMap,
   ModelDefinition,
+  ModelStateSelector,
   Store,
   StoreComponentType,
 } from './interfaces';
@@ -19,103 +13,105 @@ import { createRuntimeOnlyContext } from './utils/runtime-only-context';
 
 /**
  * 定义一个 Model 。
+ *
+ * 目前，这个函数的功能只是将传入的 hook 原样返回，主要是为了提升代码可读性、少写几个
+ * typescript 类型。
  */
 export function defineModel<Actions, State>(
-  hook: ModelDefinition<Actions, State>['hook'],
+  hook: ModelDefinition<Actions, State>,
 ): ModelDefinition<Actions, State> {
-  return { hook };
+  return hook;
 }
 
+/**
+ * 根据 Model 定义的映射，生成一个 Store 。
+ */
 export function createStore<DefinitionsMap extends AnyModelDefinitionsMap>(
   definitionsMap: DefinitionsMap,
 ): Store<DefinitionsMap> {
+  // 将 definitionsMap 转换为数组形式，便于后续遍历
+  const names: readonly string[] = Object.keys(definitionsMap);
+  const definitions: readonly AnyModelDefinition[] = names.map((name) => definitionsMap[name]);
+
+  // 创建一个 provider ，用于 Store 与 Model 的数据交换
   const [useRuntime, RuntimeProvider] = createRuntimeOnlyContext<StoreRuntime>();
 
-  const models = Object.keys(definitionsMap).map((name) => {
-    const definition = definitionsMap[name];
-    const [useState, StateProvider] = createRuntimeOnlyContext(`${name}State`);
-    const [useActions, ActionsProvider] = createRuntimeOnlyContext(`${name}Actions`);
-    return { ActionsProvider, definition, name, StateProvider, useActions, useState } as const;
-  });
-
+  // 创建 Store 组件，用于运行与承载 Model
   const Store: StoreComponentType = ({ children }) => {
-    const modelStatesMemo = useConstant(() => {
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      return new WeakMap<AnyModelDefinition, readonly [state: any]>();
-    });
+    // Model 的运行结果，我们能确保 hook 严格按顺序执行，所以其结果可以用数组保存
+    const snapshots = useConstant((): ModelSnapshot[] => new Array(definitions.length));
 
-    const setCallbacksMemo = useConstant(() => {
-      return new WeakMap<AnyModelDefinition, Dispatch<SetStateAction<readonly UpdateCallback[]>>>();
-    });
-
+    // 与使用 useModel 的后代组件进行数据交换的 API ，通过 RuntimeProvider 下发
     const runtime = useConstant((): StoreRuntime => {
-      return {
-        register: (model, callback) => {
-          const setCallbacks = read(setCallbacksMemo, model);
-          setCallbacks((prev) => prev.concat(callback));
-          return () => setCallbacks((prev) => prev.filter((exists) => exists !== callback));
-        },
-        snapshot: (model) => read(modelStatesMemo, model)[0],
-      };
-
-      function read<Value>(
-        memo: WeakMap<AnyModelDefinition, Value>,
-        definition: AnyModelDefinition,
-      ): Value {
-        const value = memo.get(definition);
-        if (!value) throw new Error('Failed to read the model, it may not be mounted.');
-        return value;
-      }
+      return { callbacks: definitions.map(() => new Set()), snapshots };
     });
 
-    return models.reduce((element, model) => {
-      const [state, actions] = model.definition.hook();
-      const [callbacks, setCallbacks] = useState<readonly UpdateCallback[]>([]);
+    // 按顺序执行 Model hook ，并将运行结果存储在 snapshots 中
+    for (let index = 0; index < definitions.length; index += 1) {
+      const definition = definitions[index];
+      const callbacks = runtime.callbacks[index];
+      // 不使用 definitions[index]() 避免通过 this 暴露自身
+      const snapshot = definition();
+      // 储存 hook 运行结果
+      snapshots[index] = snapshot;
 
       useEffect(() => {
-        callbacks.forEach((callback) => callback(state));
-      }, [state]);
+        // 当 hook 运行结果发生变化时，触发回调函数
+        callbacks.forEach((callback) => callback());
+      }, snapshot);
+    }
 
-      modelStatesMemo.set(model.definition, state);
-      setCallbacksMemo.set(model.definition, setCallbacks);
-
-      return (
-        <model.ActionsProvider value={actions}>
-          <model.StateProvider value={state}>{element}</model.StateProvider>
-        </model.ActionsProvider>
-      );
-    }, <RuntimeProvider value={runtime}>{children}</RuntimeProvider>);
+    return <RuntimeProvider value={runtime}>{children}</RuntimeProvider>;
   };
 
   Store.displayName = 'Store';
 
-  return models.reduce((map, model) => {
-    (map as ModelConsumeHooksMap<AnyModelDefinitionsMap>)[`use${model.name}`] = useModel;
+  return names.reduce((map, name, index) => {
+    (map as ModelConsumeHooksMap<AnyModelDefinitionsMap>)[`use${name}`] = useModel;
     return map;
 
-    function useModel<SelectedState>(
-      select: (state: unknown) => SelectedState = defaultSelect as never,
+    function useModel<Actions, State, SelectedState>(
+      select: ModelStateSelector<State, SelectedState> = defaultSelect as typeof select,
       deps?: DependencyList,
-    ): [selected: SelectedState, actions: unknown] {
+    ): [selected: SelectedState, actions: Actions] {
+      // 从 Store 中获取 runtime API
       const runtime = useRuntime();
-      const actions = model.useActions();
-      const selectorRef = useRef(select);
+      // select 不计入 deps 当中，以减少 select 操作的执行次数
+      const selectRef = useRef(select);
 
-      selectorRef.current = select;
+      // 从 Store 中读取 Model 快照
+      const readSnapshot = useConstant(() => () => {
+        return runtime.snapshots[index] as [state: State, actions: Actions];
+      });
 
-      const [selected, setSelected] = useState(() => {
-        return select(runtime.snapshot(model.definition));
+      // 触发一次更新
+      const update = useConstant(() => () => {
+        const snapshot = readSnapshot();
+        setActions(() => snapshot[1]);
+        setSelected((prev) => selectRef.current(snapshot[0], prev));
+      });
+
+      // 在当前组件内部维护新的状态
+      const [actions, setActions] = useState(() => readSnapshot()[1]);
+      const [selected, setSelected] = useState(() => select(readSnapshot()[0]));
+
+      useEffect(() => {
+        selectRef.current = select;
       });
 
       useEffect(() => {
-        return runtime.register(model.definition, (next: unknown) => {
-          setSelected(selectorRef.current(next));
-        });
-      }, [runtime]);
+        // runtime 或是 deps 内容发生更新时，主动触发一次更新
+        update();
+      }, ([runtime] as DependencyList).concat(deps));
 
       useEffect(() => {
-        setSelected(select(runtime.snapshot(model.definition)));
-      }, ([runtime] as DependencyList).concat(deps));
+        // 注册回调，在 Model 更新时触发调用
+        const callbacks = runtime.callbacks[index];
+        callbacks.add(update);
+        return () => {
+          callbacks.delete(update);
+        };
+      }, [runtime]);
 
       return [selected, actions];
     }
@@ -127,24 +123,20 @@ function defaultSelect<State>(state: State): State {
 }
 
 /**
- * Model 状态变更的回调函数。
+ * Model 在 Store 中运行的快照，其实就是 ModelDefinition hook 的返回结果。
  */
-// eslint-disable-next-line @typescript-eslint/no-explicit-any
-type UpdateCallback<State = any> = (state: State) => void;
+type ModelSnapshot = ReturnType<ModelDefinition<unknown, unknown>>;
 
 /**
  * 内部使用的 runtime API ， useModel() 会使用此 API 进行初始化与注册。
  */
 interface StoreRuntime {
   /**
-   * 在 definition 对应的 Model 上注册一个回调函数，在其状态变更时调用。
+   * 储存所有 Model 变更的回调函数。
    */
-  readonly register: <Actions, State>(
-    definition: ModelDefinition<Actions, State>,
-    callback: UpdateCallback<State>,
-  ) => () => void;
+  readonly callbacks: readonly Set<() => void>[];
   /**
-   * 获取 definition 对应的 Model 当前的状态快照。
+   * 所有 Model 在 Store 中运行的快照。
    */
-  readonly snapshot: <Actions, State>(definition: ModelDefinition<Actions, State>) => State;
+  readonly snapshots: readonly ModelSnapshot[];
 }
