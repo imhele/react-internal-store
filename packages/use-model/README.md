@@ -1,3 +1,0 @@
-# use-model
-
-[![NPM version](https://img.shields.io/npm/v/use-model.svg?style=flat)](https://npmjs.org/package/use-model) [![NPM downloads](http://img.shields.io/npm/dm/use-model.svg?style=flat)](https://npmjs.org/package/use-model) [![Test Coverage](https://github.com/imhele/use-model/actions/workflows/Test%20Coverage.yml/badge.svg)](https://github.com/imhele/use-model/actions/workflows/Test%20Coverage.yml) [![Coverage Status](https://coveralls.io/repos/github/imhele/use-model/badge.svg?branch=master)](https://coveralls.io/github/imhele/use-model?branch=master) [![License](https://img.shields.io/npm/l/use-model.svg)](https://npmjs.org/package/use-model)

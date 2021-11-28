@@ -1,46 +1,46 @@
 {
   "jest.describe.class": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe class",
     "body": "describe('class ${1:name}', () => {\n\tit('should exist', () => {\n\t\texpect($1).toHaveProperty('prototype');\n\t\texpect($1).toHaveProperty('constructor', expect.any(Function));\n\t});\n});"
   },
   "jest.describe.const": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe const",
     "body": "describe('const ${1:name}', () => {\n\tit('should exist', () => {\n\t\texpect($1).toEqual(${2:expect.any(Object)});\n\t});\n});"
   },
   "jest.describe.function": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe function",
     "body": "describe('function ${1:name}()', () => {\n\tit('should exist', () => {\n\t\texpect($1).toEqual(expect.any(Function));\n\t});\n});"
   },
   "jest.describe.method": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe method",
     "body": "describe('method ${1:name}()', () => {\n\t$0\n});"
   },
   "jest.describe.module": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe module",
     "body": "describe('module ${1:name}', () => {\n\tit('should exist', async () => {\n\t\texpect(await import('$1')).toEqual(${2:expect.any(Object)});\n\t});\n});"
   },
   "jest.describe.property": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe property",
     "body": "describe('property ${1:name}', () => {\n\t$0\n});"
   },
   "jest.describe.should": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "describe should",
     "body": "describe('should ${1:satisfy some conditions}', () => {\n\t$0\n});"
   },
   "jest.it.should": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "it should",
     "body": "it('should ${1:satisfy some conditions}', () => {\n\t$0\n});"
   },
   "jest.test.eg": {
-    "scope": "javascript,typescript",
+    "scope": "javascript,typescript,typescriptreact",
     "prefix": "test eg",
     "body": "test('eg. ${1:situation}', () => {\n\t$0\n});"
   }

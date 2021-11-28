@@ -1,0 +1,33 @@
+{
+  "name": "react-internal-store",
+  "version": "0.0.1-alpha.0",
+  "license": "MIT",
+  "main": "./lib/index.js",
+  "module": "./es/index.js",
+  "types": "./es/index.d.ts",
+  "dependencies": {
+    "@babel/runtime": "~7.15.0"
+  },
+  "peerDependencies": {
+    "react": "^16.8.0 || ^17.0.0 || ^18.0.0-beta-0cc724c77-20211125"
+  },
+  "devDependencies": {
+    "@types/react": "^16.8.0",
+    "@types/react-dom": "^16.8.0",
+    "react": "^16.8.0",
+    "react-dom": "^16.8.0",
+    "typescript": "^4.5.2",
+    "wc-bundler": "^0.10.7"
+  },
+  "sideEffects": false,
+  "author": "何乐 <work@imhele.com> (https://github.com/imhele)",
+  "homepage": "https://github.com/imhele/react-internal-store",
+  "bugs": {
+    "url": "https://github.com/imhele/react-internal-store/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/imhele/react-internal-store",
+    "directory": "packages/react-internal-store"
+  }
+}
